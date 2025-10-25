@@ -1,98 +1,473 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import React from "react";
+import {
+    ActivityIndicator,
+    FlatList,
+    ImageBackground,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import { ProductCard } from "../../src/components/product";
+import ThemedImage from "../../src/components/themed-image";
+import {
+    borderRadius,
+    colors,
+    fontSize,
+    images,
+    spacing,
+} from "../../src/constants";
+import {
+    useCategories,
+    useFlashSaleProducts,
+    useRecipes,
+    useTodaySpecials,
+} from "../../src/hooks/useProducts";
+import { useCartStore } from "../../src/store";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    const router = useRouter();
+    const addItem = useCartStore((state) => state.addItem);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+    const { data: categories, isLoading: categoriesLoading } = useCategories();
+    const { data: flashSaleProducts, isLoading: flashSaleLoading } =
+        useFlashSaleProducts();
+    const { data: todaySpecials, isLoading: specialsLoading } =
+        useTodaySpecials();
+    const { data: recipes } = useRecipes();
+
+    const handleAddToCart = (product: any) => {
+        addItem(product);
+    };
+
+    return (
+        <View style={styles.container}>
+            <ScrollView
+                style={styles.scrollView}
+                showsVerticalScrollIndicator={false}
+            >
+                {/* Banner */}
+                <View>
+                    <ImageBackground
+                        source={images.homeBackground}
+                        style={styles.banner}
+                    >
+                        {/* Address */}
+                        <View style={styles.header}>
+                            <View>
+                                <Text style={styles.deliverText}>
+                                    Deliver to
+                                </Text>
+                                <View style={styles.locationRow}>
+                                    <Ionicons
+                                        name="location"
+                                        size={16}
+                                        color={colors.primary}
+                                    />
+                                    <Text style={styles.locationText}>
+                                        Dexter&apos;s Home
+                                    </Text>
+                                    <Ionicons
+                                        name="chevron-down"
+                                        size={16}
+                                        color={colors.text.primary}
+                                    />
+                                </View>
+                            </View>
+                            <TouchableOpacity style={styles.notificationButton}>
+                                <Ionicons
+                                    name="notifications-outline"
+                                    size={24}
+                                    color={colors.primary}
+                                />
+                            </TouchableOpacity>
+                        </View>
+
+                        <Text style={styles.bannerTitle}>
+                            Pay Day{"\n"}Shop Day
+                        </Text>
+                        <Text style={styles.bannerSubtitle}>
+                            Voucher{"\n"}up to
+                        </Text>
+                        <Text style={styles.bannerDiscount}>75%</Text>
+
+                        {/* White fade effect at bottom */}
+                        <LinearGradient
+                            colors={["transparent", colors.background]}
+                            style={styles.bannerGradient}
+                        />
+                    </ImageBackground>
+                </View>
+
+                {/* Search */}
+                <View style={styles.searchContainer}>
+                    <Ionicons
+                        name="search"
+                        size={20}
+                        color={colors.gray[400]}
+                    />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="What's your daily needs?"
+                        placeholderTextColor={colors.gray[400]}
+                    />
+                </View>
+
+                {/* Categories */}
+                <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Categories</Text>
+                        <TouchableOpacity
+                            onPress={() => router.push("/categories")}
+                        >
+                            <Text style={styles.seeAll}>See all →</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {categoriesLoading ? (
+                        <ActivityIndicator color={colors.primary} />
+                    ) : (
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.categoriesScroll}
+                        >
+                            {categories?.slice(0, 6).map((category) => (
+                                <TouchableOpacity
+                                    key={category.id}
+                                    style={styles.categoryItem}
+                                    onPress={() => router.push(`/categories`)}
+                                >
+                                    <View style={[styles.categoryIcon]}>
+                                        <ThemedImage
+                                            source={category.image}
+                                            style={{
+                                                width: 30,
+                                                height: 30,
+                                            }}
+                                        />
+                                    </View>
+                                    <Text style={styles.categoryName}>
+                                        {category.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    )}
+                </View>
+
+                {/* Flash Sale */}
+                <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Flash sale 🔥</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.seeAll}>See all →</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {flashSaleLoading ? (
+                        <ActivityIndicator color={colors.primary} />
+                    ) : (
+                        <FlatList
+                            data={flashSaleProducts?.slice(0, 4)}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={styles.productsScroll}
+                            renderItem={({ item }) => (
+                                <View style={styles.productCardWrapper}>
+                                    <ProductCard
+                                        product={item}
+                                        onPress={() =>
+                                            router.push({
+                                                pathname: "/product/[id]",
+                                                params: { id: item.id },
+                                            })
+                                        }
+                                        onAddToCart={() =>
+                                            handleAddToCart(item)
+                                        }
+                                    />
+                                </View>
+                            )}
+                        />
+                    )}
+                </View>
+
+                {/* Today's Specials */}
+                <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>
+                            Today&apos;s specials
+                        </Text>
+                        <TouchableOpacity>
+                            <Text style={styles.seeAll}>See all →</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {specialsLoading ? (
+                        <ActivityIndicator color={colors.primary} />
+                    ) : (
+                        <FlatList
+                            data={todaySpecials?.slice(0, 4)}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item) => item.id}
+                            contentContainerStyle={styles.productsScroll}
+                            renderItem={({ item }) => (
+                                <View style={styles.productCardWrapper}>
+                                    <ProductCard
+                                        product={item}
+                                        onPress={() =>
+                                            router.push({
+                                                pathname: "/product/[id]",
+                                                params: { id: item.id },
+                                            })
+                                        }
+                                        onAddToCart={() =>
+                                            handleAddToCart(item)
+                                        }
+                                    />
+                                </View>
+                            )}
+                        />
+                    )}
+                </View>
+
+                {/* Your daily inspiration */}
+                <View style={styles.section}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>
+                            Your daily inspiration
+                        </Text>
+                        <TouchableOpacity>
+                            <Text style={styles.seeAll}>See all →</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.recipesScroll}
+                    >
+                        {recipes?.map((recipe) => (
+                            <TouchableOpacity
+                                key={recipe.id}
+                                style={styles.recipeCard}
+                            >
+                                <View
+                                    style={{
+                                        backgroundColor: colors.gray[50],
+                                        flexDirection: "row",
+                                        padding: spacing.xs,
+                                        borderRadius: borderRadius.xl,
+                                    }}
+                                >
+                                    <View style={styles.recipeInfo}>
+                                        <Text
+                                            style={styles.recipeName}
+                                            numberOfLines={2}
+                                        >
+                                            {recipe.name}
+                                        </Text>
+                                        <Text style={styles.recipeTime}>
+                                            <Ionicons
+                                                name="time-outline"
+                                                size={14}
+                                                color={colors.text.secondary}
+                                            />{" "}
+                                            {recipe.prepTime} mins
+                                        </Text>
+                                    </View>
+                                    <View style={styles.recipeImage}>
+                                        <ThemedImage source={recipe.image} />
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+
+                <View style={{ height: 100 }} />
+            </ScrollView>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingTop: spacing.xl,
+        paddingBottom: spacing.md,
+    },
+    deliverText: {
+        fontSize: fontSize.xs,
+        color: colors.text.secondary,
+    },
+    locationRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: spacing.xs,
+    },
+    locationText: {
+        fontSize: fontSize.md,
+        fontWeight: "600",
+        color: colors.text.primary,
+    },
+    notificationButton: {
+        padding: spacing.xs,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    banner: {
+        backgroundColor: colors.primaryLight,
+        borderRadius: borderRadius.xl,
+        padding: spacing.lg,
+        minHeight: 150,
+        overflow: "hidden",
+    },
+    bannerGradient: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 80,
+    },
+    bannerTitle: {
+        fontSize: fontSize.xxxl,
+        fontWeight: "700",
+        color: colors.primary,
+        lineHeight: 38,
+    },
+    bannerSubtitle: {
+        fontSize: fontSize.sm,
+        color: colors.text.secondary,
+        marginTop: spacing.xs,
+    },
+    bannerDiscount: {
+        fontSize: fontSize.xxl,
+        fontWeight: "700",
+        color: colors.primary,
+        marginTop: spacing.xs,
+    },
+    searchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: colors.white,
+        marginHorizontal: spacing.md,
+        marginBottom: spacing.md,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+        borderRadius: borderRadius.full,
+        borderWidth: 1,
+        borderColor: colors.border,
+    },
+    searchInput: {
+        flex: 1,
+        marginLeft: spacing.sm,
+        fontSize: fontSize.md,
+        color: colors.text.primary,
+    },
+    section: {
+        marginBottom: spacing.lg,
+    },
+    sectionHeader: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: spacing.md,
+        marginBottom: spacing.md,
+    },
+    sectionTitle: {
+        fontSize: fontSize.lg,
+        fontWeight: "700",
+        color: colors.text.primary,
+    },
+    seeAll: {
+        fontSize: fontSize.sm,
+        color: colors.primary,
+        fontWeight: "600",
+    },
+    categoriesScroll: {
+        paddingHorizontal: spacing.md,
+        gap: spacing.md,
+    },
+    categoryItem: {
+        alignItems: "center",
+        gap: spacing.xs,
+    },
+    categoryIcon: {
+        width: 60,
+        height: 60,
+        borderRadius: borderRadius.lg,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: colors.primaryLight,
+    },
+    categoryName: {
+        fontSize: fontSize.xs,
+        color: colors.text.primary,
+        fontWeight: "500",
+    },
+    productsScroll: {
+        paddingHorizontal: spacing.md,
+        gap: spacing.md,
+    },
+    productCardWrapper: {
+        marginRight: spacing.sm,
+    },
+    recipesScroll: {
+        padding: spacing.md,
+        gap: spacing.md,
+    },
+    recipeCard: {
+        width: 200,
+        height: 120,
+        backgroundColor: colors.white,
+        borderRadius: borderRadius.xl,
+        overflow: "hidden",
+        marginRight: spacing.md,
+        paddingVertical: spacing.xs,
+        paddingHorizontal: spacing.sm,
+        shadowColor: colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 2,
+    },
+    recipeImage: {
+        width: 90,
+        height: 90,
+        borderRadius: borderRadius.full,
+        overflow: "hidden",
+    },
+    recipeInfo: {
+        flex: 1,
+        justifyContent: "center",
+        paddingRight: spacing.sm,
+    },
+    recipeName: {
+        fontSize: fontSize.md,
+        fontWeight: "600",
+        color: colors.primary,
+        marginBottom: spacing.sm,
+        lineHeight: 20,
+    },
+    recipeTime: {
+        fontSize: fontSize.xs,
+        color: colors.text.secondary,
+        fontWeight: "500",
+    },
 });
