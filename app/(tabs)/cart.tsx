@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
     Alert,
+    RefreshControl,
     ScrollView,
     StyleSheet,
     Text,
@@ -10,7 +11,7 @@ import {
     View,
 } from "react-native";
 import { CartItem } from "../../src/components/cart";
-import { Button } from "../../src/components/ui";
+import { Button, CartSkeleton } from "../../src/components/ui";
 import { colors, fontSize, spacing } from "../../src/constants";
 import { orderService } from "../../src/services";
 import { useCartStore } from "../../src/store";
@@ -18,6 +19,7 @@ import { useCartStore } from "../../src/store";
 export default function CartTabScreen() {
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const {
         items,
@@ -25,10 +27,24 @@ export default function CartTabScreen() {
         toggleItemSelection,
         selectAll,
         getSelectedTotal,
+        clearSelectedItems,
     } = useCartStore();
 
     const selectedTotal = getSelectedTotal();
     const hasSelectedItems = items.some((item) => item.selected);
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            // Simulate refresh delay - in a real app, this would sync with backend
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            // You could fetch updated cart data from backend here
+        } catch (error) {
+            console.error("Error refreshing cart:", error);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     const handleCheckout = async () => {
         if (!hasSelectedItems) {
@@ -39,20 +55,39 @@ export default function CartTabScreen() {
         setIsProcessing(true);
         try {
             const selectedItems = items.filter((item) => item.selected);
-            await orderService.createOrder(selectedItems, selectedTotal);
+
+            // Create the order
+            const order = await orderService.createOrder(
+                selectedItems,
+                selectedTotal
+            );
+
+            // Clear selected items from cart after successful order
+            clearSelectedItems();
 
             Alert.alert(
-                "Order Placed",
-                "Your order has been placed successfully!",
+                "Order Placed Successfully! 🎉",
+                `Your order ${
+                    order.id
+                } has been placed.\nTotal: $${order.total.toFixed(2)}`,
                 [
                     {
-                        text: "OK",
+                        text: "View Orders",
                         onPress: () => router.push("/(tabs)/orders"),
+                    },
+                    {
+                        text: "Continue Shopping",
+                        style: "cancel",
                     },
                 ]
             );
-        } catch {
-            Alert.alert("Error", "Failed to place order. Please try again.");
+        } catch (error) {
+            console.error("Checkout error:", error);
+            Alert.alert(
+                "Order Failed",
+                "Failed to place order. Please try again.",
+                [{ text: "OK" }]
+            );
         } finally {
             setIsProcessing(false);
         }
@@ -76,7 +111,15 @@ export default function CartTabScreen() {
                     <View style={{ width: 40 }} />
                 </View>
 
-                <View style={styles.emptyContainer}>
+                <ScrollView
+                    contentContainerStyle={styles.emptyContainer}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={handleRefresh}
+                        />
+                    }
+                >
                     <Ionicons
                         name="cart-outline"
                         size={80}
@@ -91,7 +134,7 @@ export default function CartTabScreen() {
                         onPress={() => router.push("/(tabs)")}
                         style={styles.shopButton}
                     />
-                </View>
+                </ScrollView>
             </View>
         );
     }
@@ -122,20 +165,32 @@ export default function CartTabScreen() {
             <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
-            >
-                {items.map((item) => (
-                    <CartItem
-                        key={item.product.id}
-                        item={item}
-                        onUpdateQuantity={(quantity) =>
-                            updateQuantity(item.product.id, quantity)
-                        }
-                        onToggleSelect={() =>
-                            toggleItemSelection(item.product.id)
-                        }
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={handleRefresh}
                     />
-                ))}
-                <View style={{ height: 120 }} />
+                }
+            >
+                {isRefreshing ? (
+                    <CartSkeleton count={items.length || 3} />
+                ) : (
+                    <>
+                        {items.map((item) => (
+                            <CartItem
+                                key={item.product.id}
+                                item={item}
+                                onUpdateQuantity={(quantity) =>
+                                    updateQuantity(item.product.id, quantity)
+                                }
+                                onToggleSelect={() =>
+                                    toggleItemSelection(item.product.id)
+                                }
+                            />
+                        ))}
+                        <View style={{ height: 120 }} />
+                    </>
+                )}
             </ScrollView>
 
             <View style={styles.footer}>

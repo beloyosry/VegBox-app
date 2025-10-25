@@ -5,17 +5,17 @@ import {
   StyleSheet,
   ScrollView,
   TextInput,
-  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { CategoryCard } from '../../src/components/product';
 import { useCategories } from '../../src/hooks/useProducts';
 import { colors, spacing, borderRadius, fontSize } from '../../src/constants';
+import { CategoryGridSkeleton } from '../../src/components/ui';
 
 export default function CategoriesTabScreen() {
   const router = useRouter();
-  const { data: categories, isLoading } = useCategories();
+  const { data: categories, isLoading, isFetching } = useCategories();
 
   return (
     <View style={styles.container}>
@@ -37,8 +37,8 @@ export default function CategoriesTabScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {isLoading ? (
-          <ActivityIndicator color={colors.primary} size="large" />
+        {(isLoading || isFetching) ? (
+          <CategoryGridSkeleton />
         ) : (
           <View style={styles.grid}>
             {categories?.map((category) => (

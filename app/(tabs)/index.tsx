@@ -3,9 +3,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-    ActivityIndicator,
     FlatList,
     ImageBackground,
+    RefreshControl,
     ScrollView,
     StyleSheet,
     Text,
@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { ProductCard } from "../../src/components/product";
 import ThemedImage from "../../src/components/themed-image";
+import { ProductGridSkeleton, Skeleton } from "../../src/components/ui";
 import {
     borderRadius,
     colors,
@@ -34,12 +35,43 @@ export default function HomeScreen() {
     const router = useRouter();
     const addItem = useCartStore((state) => state.addItem);
 
-    const { data: categories, isLoading: categoriesLoading } = useCategories();
-    const { data: flashSaleProducts, isLoading: flashSaleLoading } =
-        useFlashSaleProducts();
-    const { data: todaySpecials, isLoading: specialsLoading } =
-        useTodaySpecials();
-    const { data: recipes } = useRecipes();
+    const {
+        data: categories,
+        isLoading: categoriesLoading,
+        isFetching: categoriesFetching,
+        refetch: refetchCategories,
+    } = useCategories();
+    const {
+        data: flashSaleProducts,
+        isLoading: flashSaleLoading,
+        isFetching: flashSaleFetching,
+        refetch: refetchFlashSale,
+    } = useFlashSaleProducts();
+    const {
+        data: todaySpecials,
+        isLoading: specialsLoading,
+        isFetching: specialsFetching,
+        refetch: refetchSpecials,
+    } = useTodaySpecials();
+    const { data: recipes, refetch: refetchRecipes } = useRecipes();
+
+    const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await Promise.all([
+                refetchCategories(),
+                refetchFlashSale(),
+                refetchSpecials(),
+                refetchRecipes(),
+            ]);
+        } catch (error) {
+            console.error("Error refreshing data:", error);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     const handleAddToCart = (product: any) => {
         addItem(product);
@@ -50,6 +82,12 @@ export default function HomeScreen() {
             <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={handleRefresh}
+                    />
+                }
             >
                 {/* Banner */}
                 <View>
@@ -129,8 +167,28 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {categoriesLoading ? (
-                        <ActivityIndicator color={colors.primary} />
+                    {categoriesLoading || categoriesFetching ? (
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.categoriesScroll}
+                        >
+                            {Array.from({ length: 6 }).map((_, index) => (
+                                <View key={index} style={styles.categoryItem}>
+                                    <Skeleton
+                                        variant="circle"
+                                        width={60}
+                                        height={60}
+                                    />
+                                    <Skeleton
+                                        variant="text"
+                                        width={50}
+                                        height={12}
+                                        style={{ marginTop: 8 }}
+                                    />
+                                </View>
+                            ))}
+                        </ScrollView>
                     ) : (
                         <ScrollView
                             horizontal
@@ -170,8 +228,8 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {flashSaleLoading ? (
-                        <ActivityIndicator color={colors.primary} />
+                    {flashSaleLoading || flashSaleFetching ? (
+                        <ProductGridSkeleton count={4} />
                     ) : (
                         <FlatList
                             data={flashSaleProducts?.slice(0, 4)}
@@ -210,8 +268,8 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    {specialsLoading ? (
-                        <ActivityIndicator color={colors.primary} />
+                    {specialsLoading || specialsFetching ? (
+                        <ProductGridSkeleton count={4} />
                     ) : (
                         <FlatList
                             data={todaySpecials?.slice(0, 4)}

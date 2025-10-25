@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-    ActivityIndicator,
+    RefreshControl,
     ScrollView,
     StyleSheet,
     Text,
@@ -10,7 +10,7 @@ import {
     View,
 } from "react-native";
 import ThemedImage from "../../src/components/themed-image";
-import { Button } from "../../src/components/ui";
+import { Button, ProductDetailSkeleton } from "../../src/components/ui";
 import { borderRadius, colors, fontSize, spacing } from "../../src/constants";
 import { useProduct } from "../../src/hooks/useProducts";
 import { useCartStore } from "../../src/store";
@@ -21,7 +21,20 @@ export default function ProductDetailScreen() {
     const [quantity, setQuantity] = useState(1);
     const addItem = useCartStore((state) => state.addItem);
 
-    const { data: product, isLoading } = useProduct(id as string);
+    const { data: product, isLoading, isFetching, refetch } = useProduct(id as string);
+
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await refetch();
+        } catch (error) {
+            console.error("Error refreshing product:", error);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
 
     const handleAddToCart = () => {
         if (product) {
@@ -32,12 +45,8 @@ export default function ProductDetailScreen() {
         }
     };
 
-    if (isLoading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={colors.primary} />
-            </View>
-        );
+    if (isLoading || isFetching) {
+        return <ProductDetailSkeleton />;
     }
 
     if (!product) {
@@ -76,6 +85,12 @@ export default function ProductDetailScreen() {
             <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={isRefreshing}
+                        onRefresh={handleRefresh}
+                    />
+                }
             >
                 <View style={styles.imageContainer}>
                     <ThemedImage source={product.image} style={styles.image} />

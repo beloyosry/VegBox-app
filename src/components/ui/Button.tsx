@@ -3,11 +3,11 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  ActivityIndicator,
   ViewStyle,
   TextStyle,
 } from 'react-native';
 import { colors, spacing, borderRadius, fontSize } from '../../constants';
+import { Skeleton } from './Skeleton';
 
 interface ButtonProps {
   title: string;
@@ -44,8 +44,11 @@ export const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.7}
     >
       {loading ? (
-        <ActivityIndicator
-          color={variant === 'outline' ? colors.primary : colors.white}
+        <Skeleton
+          variant="text"
+          width={60}
+          height={20}
+          style={{ backgroundColor: variant === 'outline' ? colors.primary : colors.white }}
         />
       ) : (
         <Text style={[styles.text, styles[`${variant}Text`], textStyle]}>

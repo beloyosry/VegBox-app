@@ -1,5 +1,5 @@
-import { Category, Product, Recipe } from "../types";
 import { images } from "../constants/images.constants";
+import { Category, Product, Recipe } from "../types";
 
 export const mockCategories: Category[] = [
     {
