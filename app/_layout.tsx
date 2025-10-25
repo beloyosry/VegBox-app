@@ -91,6 +91,12 @@ function RootLayoutNav() {
                 options={{ headerShown: false }}
             />
             <Stack.Screen name="checkout" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/address-form" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/addresses" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/edit" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/payment-form" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/payment-methods" options={{ headerShown: false }} />
+            <Stack.Screen name="profile/settings" options={{ headerShown: false }} />
         </Stack>
     );
 }

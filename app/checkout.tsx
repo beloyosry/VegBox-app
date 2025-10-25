@@ -13,15 +13,18 @@ import ThemedImage from "../src/components/themed-image";
 import { Button } from "../src/components/ui";
 import { borderRadius, colors, fontSize, spacing } from "../src/constants";
 import { orderService } from "../src/services";
-import { useCartStore } from "../src/store";
+import { useCartStore, useProfileStore } from "../src/store";
 
 export default function CheckoutScreen() {
     const router = useRouter();
     const { items, getSelectedTotal } = useCartStore();
+    const { addresses } = useProfileStore();
     const [isProcessing, setIsProcessing] = useState(false);
     const [shippingOption, setShippingOption] = useState<
         "standard" | "priority"
     >("standard");
+
+    const defaultAddress = addresses.find((addr) => addr.isDefault) || addresses[0];
 
     const selectedItems = items.filter((item) => item.selected);
     const subtotal = getSelectedTotal();
@@ -87,27 +90,45 @@ export default function CheckoutScreen() {
                                 color={colors.primary}
                             />
                         </View>
-                        <Text style={styles.sectionTitle}>
-                            Delivery address
-                        </Text>
-                        <TouchableOpacity>
-                            <Text style={styles.actionText}>Home</Text>
+                        <Text style={styles.sectionTitle}>Delivery address</Text>
+                        <TouchableOpacity onPress={() => router.push("/profile/addresses")}>
+                            <Text style={styles.actionText}>
+                                {defaultAddress?.label || "Add"}
+                            </Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.addressText}>
-                        Jalan By Pass Ngurah Rai, Denpasar, Bali, 80228
-                    </Text>
-                    <TouchableOpacity style={styles.contactRow}>
-                        <Text style={styles.contactName}>Dexter Morgan</Text>
-                        <Text style={styles.contactPhone}>
-                            +62 851 8819 0911
-                        </Text>
-                        <Ionicons
-                            name="chevron-forward"
-                            size={20}
-                            color={colors.text.secondary}
-                        />
-                    </TouchableOpacity>
+                    {defaultAddress ? (
+                        <>
+                            <Text style={styles.addressText}>
+                                {defaultAddress.address}
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.contactRow}
+                                onPress={() => router.push("/profile/addresses")}
+                            >
+                                <Text style={styles.contactName}>
+                                    {defaultAddress.name}
+                                </Text>
+                                <Text style={styles.contactPhone}>
+                                    {defaultAddress.phone}
+                                </Text>
+                                <Ionicons
+                                    name="chevron-forward"
+                                    size={20}
+                                    color={colors.text.secondary}
+                                />
+                            </TouchableOpacity>
+                        </>
+                    ) : (
+                        <TouchableOpacity
+                            style={styles.addAddressButton}
+                            onPress={() => router.push("/profile/addresses")}
+                        >
+                            <Text style={styles.addAddressText}>
+                                Add delivery address
+                            </Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 {/* Shipping Schedule */}
@@ -377,6 +398,15 @@ const styles = StyleSheet.create({
         fontSize: fontSize.sm,
         color: colors.text.secondary,
         marginRight: spacing.xs,
+    },
+    addAddressButton: {
+        paddingVertical: spacing.md,
+        alignItems: "center",
+    },
+    addAddressText: {
+        fontSize: fontSize.md,
+        color: colors.primary,
+        fontWeight: "600",
     },
     shippingSection: {
         padding: spacing.md,

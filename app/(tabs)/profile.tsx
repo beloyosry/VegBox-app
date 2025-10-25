@@ -3,11 +3,12 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { borderRadius, colors, fontSize, spacing } from "../../src/constants";
-import { useAuthStore } from "../../src/store";
+import { useAuthStore, useProfileStore } from "../../src/store";
 
 export default function ProfileScreen() {
     const router = useRouter();
-    const { user, clearAuth } = useAuthStore();
+    const { clearAuth } = useAuthStore();
+    const { profile } = useProfileStore();
 
     const handleLogout = () => {
         Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -38,12 +39,15 @@ export default function ProfileScreen() {
                             color={colors.primary}
                         />
                     </View>
-                    <Text style={styles.name}>{user?.name || "Guest"}</Text>
-                    <Text style={styles.email}>{user?.email || ""}</Text>
+                    <Text style={styles.name}>{profile.name}</Text>
+                    <Text style={styles.email}>{profile.email}</Text>
                 </View>
 
                 <View style={styles.menuSection}>
-                    <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => router.push("/profile/edit")}
+                    >
                         <Ionicons
                             name="person-outline"
                             size={24}
@@ -57,7 +61,10 @@ export default function ProfileScreen() {
                         />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => router.push("/profile/addresses")}
+                    >
                         <Ionicons
                             name="location-outline"
                             size={24}
@@ -71,7 +78,10 @@ export default function ProfileScreen() {
                         />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => router.push("/profile/payment-methods")}
+                    >
                         <Ionicons
                             name="card-outline"
                             size={24}
@@ -85,7 +95,10 @@ export default function ProfileScreen() {
                         />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.menuItem}>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => router.push("/profile/settings")}
+                    >
                         <Ionicons
                             name="settings-outline"
                             size={24}

@@ -13,6 +13,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import AddressSelector from "../../src/components/address-selector";
 import { ProductCard } from "../../src/components/product";
 import ThemedImage from "../../src/components/themed-image";
 import { ProductGridSkeleton, Skeleton } from "../../src/components/ui";
@@ -97,26 +98,7 @@ export default function HomeScreen() {
                     >
                         {/* Address */}
                         <View style={styles.header}>
-                            <View>
-                                <Text style={styles.deliverText}>
-                                    Deliver to
-                                </Text>
-                                <View style={styles.locationRow}>
-                                    <Ionicons
-                                        name="location"
-                                        size={16}
-                                        color={colors.primary}
-                                    />
-                                    <Text style={styles.locationText}>
-                                        Dexter&apos;s Home
-                                    </Text>
-                                    <Ionicons
-                                        name="chevron-down"
-                                        size={16}
-                                        color={colors.text.primary}
-                                    />
-                                </View>
-                            </View>
+                            <AddressSelector />
                             <TouchableOpacity style={styles.notificationButton}>
                                 <Ionicons
                                     name="notifications-outline"
