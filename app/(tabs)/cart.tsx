@@ -13,12 +13,10 @@ import {
 import { CartItem } from "../../src/components/cart";
 import { Button, CartSkeleton } from "../../src/components/ui";
 import { colors, fontSize, spacing } from "../../src/constants";
-import { orderService } from "../../src/services";
 import { useCartStore } from "../../src/store";
 
 export default function CartTabScreen() {
     const router = useRouter();
-    const [isProcessing, setIsProcessing] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const {
@@ -27,7 +25,6 @@ export default function CartTabScreen() {
         toggleItemSelection,
         selectAll,
         getSelectedTotal,
-        clearSelectedItems,
     } = useCartStore();
 
     const selectedTotal = getSelectedTotal();
@@ -46,51 +43,14 @@ export default function CartTabScreen() {
         }
     };
 
-    const handleCheckout = async () => {
+    const handleCheckout = () => {
         if (!hasSelectedItems) {
             Alert.alert("No items selected", "Please select items to checkout");
             return;
         }
 
-        setIsProcessing(true);
-        try {
-            const selectedItems = items.filter((item) => item.selected);
-
-            // Create the order
-            const order = await orderService.createOrder(
-                selectedItems,
-                selectedTotal
-            );
-
-            // Clear selected items from cart after successful order
-            clearSelectedItems();
-
-            Alert.alert(
-                "Order Placed Successfully! 🎉",
-                `Your order ${
-                    order.id
-                } has been placed.\nTotal: $${order.total.toFixed(2)}`,
-                [
-                    {
-                        text: "View Orders",
-                        onPress: () => router.push("/(tabs)/orders"),
-                    },
-                    {
-                        text: "Continue Shopping",
-                        style: "cancel",
-                    },
-                ]
-            );
-        } catch (error) {
-            console.error("Checkout error:", error);
-            Alert.alert(
-                "Order Failed",
-                "Failed to place order. Please try again.",
-                [{ text: "OK" }]
-            );
-        } finally {
-            setIsProcessing(false);
-        }
+        // Navigate to checkout screen
+        router.push("/checkout");
     };
 
     if (items.length === 0) {
@@ -201,9 +161,9 @@ export default function CartTabScreen() {
                     </Text>
                 </View>
                 <Button
-                    title={isProcessing ? "Processing..." : "Checkout"}
+                    title="Checkout"
                     onPress={handleCheckout}
-                    disabled={!hasSelectedItems || isProcessing}
+                    disabled={!hasSelectedItems}
                     style={styles.checkoutButton}
                 />
             </View>
