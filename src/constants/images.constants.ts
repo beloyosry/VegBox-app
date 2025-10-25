@@ -28,6 +28,9 @@ import loginBackground from "../../assets/images/login-background.png";
 // Home Background
 import homeBackground from "../../assets/images/home-background.png";
 
+// Order Success
+import orderSuccess from "../../assets/images/success-order.png";
+
 export const categoryImages = {
     vegetables,
     fruits,
@@ -60,4 +63,5 @@ export const images = {
     loginBackground,
     homeBackground,
     splashScreen,
+    orderSuccess,
 };

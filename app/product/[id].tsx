@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import CartCounter from "../../src/components/cart/CartCounter";
 import ThemedImage from "../../src/components/themed-image";
 import { Button, ProductDetailSkeleton } from "../../src/components/ui";
 import { borderRadius, colors, fontSize, spacing } from "../../src/constants";
@@ -21,7 +22,12 @@ export default function ProductDetailScreen() {
     const [quantity, setQuantity] = useState(1);
     const addItem = useCartStore((state) => state.addItem);
 
-    const { data: product, isLoading, isFetching, refetch } = useProduct(id as string);
+    const {
+        data: product,
+        isLoading,
+        isFetching,
+        refetch,
+    } = useProduct(id as string);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -70,16 +76,11 @@ export default function ProductDetailScreen() {
                         color={colors.text.primary}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity
+
+                <CartCounter
                     style={styles.headerButton}
-                    onPress={() => router.push("/(tabs)/cart")}
-                >
-                    <Ionicons
-                        name="cart-outline"
-                        size={24}
-                        color={colors.primary}
-                    />
-                </TouchableOpacity>
+                    cartIcon={{ size: 20 }}
+                />
             </View>
 
             <ScrollView

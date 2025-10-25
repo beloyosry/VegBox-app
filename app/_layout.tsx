@@ -70,33 +70,68 @@ function RootLayoutNav() {
         }
     }, [isAuthenticated, segments, isReady, router]);
 
-    useEffect(() => {
-        logAsyncStorage();
-        // AsyncStorage.clear();
-    }, [AsyncStorage]);
+    // useEffect(() => {
+    //     logAsyncStorage();
+    //     // AsyncStorage.clear();
+    // }, [AsyncStorage]);
 
     return (
         <Stack>
+            {/* Splash screen */}
             <Stack.Screen name="index" options={{ headerShown: false }} />
+
+            {/* auth screens */}
             <Stack.Screen name="login" options={{ headerShown: false }} />
+
+            {/* Tabs screens */}
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+            {/* category screens */}
             <Stack.Screen name="categories" options={{ headerShown: false }} />
+            <Stack.Screen
+                name="category/[id]"
+                options={{ headerShown: false }}
+            />
+
+            {/* product screens */}
             <Stack.Screen
                 name="product/[id]"
                 options={{ headerShown: false }}
             />
+
+            {/* order screens */}
             <Stack.Screen name="order/[id]" options={{ headerShown: false }} />
             <Stack.Screen
                 name="order-success"
                 options={{ headerShown: false }}
             />
             <Stack.Screen name="checkout" options={{ headerShown: false }} />
-            <Stack.Screen name="profile/address-form" options={{ headerShown: false }} />
-            <Stack.Screen name="profile/addresses" options={{ headerShown: false }} />
-            <Stack.Screen name="profile/edit" options={{ headerShown: false }} />
-            <Stack.Screen name="profile/payment-form" options={{ headerShown: false }} />
-            <Stack.Screen name="profile/payment-methods" options={{ headerShown: false }} />
-            <Stack.Screen name="profile/settings" options={{ headerShown: false }} />
+
+            {/* profile screens */}
+            <Stack.Screen
+                name="profile/address-form"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="profile/addresses"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="profile/edit"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="profile/payment-form"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="profile/payment-methods"
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="profile/settings"
+                options={{ headerShown: false }}
+            />
         </Stack>
     );
 }

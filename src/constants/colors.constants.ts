@@ -3,6 +3,10 @@ export const colors = {
   primary: '#68B984',
   primaryDark: '#5AA876',
   primaryLight: '#E8F5E9',
+
+  // Icons
+  activeIcon: '#68B984',
+  inactiveIcon: '#B9BABD',
   
   // Secondary colors
   secondary: '#FF6B6B',

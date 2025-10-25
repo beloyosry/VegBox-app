@@ -207,6 +207,40 @@ export function OrderDetailSkeleton() {
   );
 }
 
+export function CategoryProductsSkeleton() {
+  return (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 16 }}>
+      {Array.from({ length: 6 }).map((_, index) => (
+        <View key={index} style={{ width: '47%' }}>
+          <Skeleton variant="card" height={200} style={{ marginBottom: 8 }} />
+          <Skeleton variant="text" width="80%" height={16} style={{ marginBottom: 4 }} />
+          <Skeleton variant="text" width="50%" height={14} style={{ marginBottom: 4 }} />
+          <Skeleton variant="text" width="40%" height={16} />
+        </View>
+      ))}
+    </View>
+  );
+}
+
+export function RecipesSkeleton() {
+  return (
+    <View style={{ flexDirection: 'row', paddingHorizontal: 16, gap: 12 }}>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <View key={index} style={{ width: 280 }}>
+          <View style={{ backgroundColor: '#F9FAFB', padding: 4, borderRadius: 16, flexDirection: 'row' }}>
+            <View style={{ flex: 1, paddingRight: 8 }}>
+              <Skeleton variant="text" width="90%" height={16} style={{ marginBottom: 8 }} />
+              <Skeleton variant="text" width="70%" height={14} style={{ marginBottom: 8 }} />
+              <Skeleton variant="text" width="50%" height={12} />
+            </View>
+            <Skeleton variant="card" width={100} height={100} />
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   skeleton: {
     backgroundColor: colors.gray[200],

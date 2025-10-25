@@ -16,7 +16,11 @@ import {
 import AddressSelector from "../../src/components/address-selector";
 import { ProductCard } from "../../src/components/product";
 import ThemedImage from "../../src/components/themed-image";
-import { ProductGridSkeleton, Skeleton } from "../../src/components/ui";
+import {
+    ProductGridSkeleton,
+    RecipesSkeleton,
+    Skeleton,
+} from "../../src/components/ui";
 import {
     borderRadius,
     colors,
@@ -27,6 +31,7 @@ import {
 import {
     useCategories,
     useFlashSaleProducts,
+    useProducts,
     useRecipes,
     useTodaySpecials,
 } from "../../src/hooks/useProducts";
@@ -42,6 +47,7 @@ export default function HomeScreen() {
         isFetching: categoriesFetching,
         refetch: refetchCategories,
     } = useCategories();
+    const { data: allProducts } = useProducts();
     const {
         data: flashSaleProducts,
         isLoading: flashSaleLoading,
@@ -54,9 +60,24 @@ export default function HomeScreen() {
         isFetching: specialsFetching,
         refetch: refetchSpecials,
     } = useTodaySpecials();
-    const { data: recipes, refetch: refetchRecipes } = useRecipes();
+    const {
+        data: recipes,
+        isLoading: recipesLoading,
+        isFetching: recipesFetching,
+        refetch: refetchRecipes,
+    } = useRecipes();
 
     const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+    // Calculate product count for each category
+    const categoriesWithCount = React.useMemo(() => {
+        if (!categories || !allProducts) return categories;
+        
+        return categories.map((category) => ({
+            ...category,
+            productCount: allProducts.filter((product) => product.category === category.id).length,
+        }));
+    }, [categories, allProducts]);
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
@@ -177,11 +198,19 @@ export default function HomeScreen() {
                             showsHorizontalScrollIndicator={false}
                             contentContainerStyle={styles.categoriesScroll}
                         >
-                            {categories?.slice(0, 6).map((category) => (
+                            {categoriesWithCount?.slice(0, 6).map((category) => (
                                 <TouchableOpacity
                                     key={category.id}
                                     style={styles.categoryItem}
-                                    onPress={() => router.push(`/categories`)}
+                                    onPress={() =>
+                                        router.push({
+                                            pathname: "/category/[id]",
+                                            params: {
+                                                id: category.id,
+                                                name: category.name,
+                                            },
+                                        })
+                                    }
                                 >
                                     <View style={[styles.categoryIcon]}>
                                         <ThemedImage
@@ -290,47 +319,51 @@ export default function HomeScreen() {
                         </TouchableOpacity>
                     </View>
 
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.recipesScroll}
-                    >
-                        {recipes?.map((recipe) => (
-                            <TouchableOpacity
-                                key={recipe.id}
-                                style={styles.recipeCard}
-                            >
-                                <View
-                                    style={{
-                                        backgroundColor: colors.gray[50],
-                                        flexDirection: "row",
-                                        padding: spacing.xs,
-                                        borderRadius: borderRadius.xl,
-                                    }}
+                    {recipesLoading || recipesFetching ? (
+                        <RecipesSkeleton />
+                    ) : (
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.recipesScroll}
+                        >
+                            {recipes?.map((recipe) => (
+                                <TouchableOpacity
+                                    key={recipe.id}
+                                    style={styles.recipeCard}
                                 >
-                                    <View style={styles.recipeInfo}>
-                                        <Text
-                                            style={styles.recipeName}
-                                            numberOfLines={2}
-                                        >
-                                            {recipe.name}
-                                        </Text>
-                                        <Text style={styles.recipeTime}>
-                                            <Ionicons
-                                                name="time-outline"
-                                                size={14}
-                                                color={colors.text.secondary}
-                                            />{" "}
-                                            {recipe.prepTime} mins
-                                        </Text>
+                                    <View
+                                        style={{
+                                            backgroundColor: colors.gray[50],
+                                            flexDirection: "row",
+                                            padding: spacing.xs,
+                                            borderRadius: borderRadius.xl,
+                                        }}
+                                    >
+                                        <View style={styles.recipeInfo}>
+                                            <Text
+                                                style={styles.recipeName}
+                                                numberOfLines={2}
+                                            >
+                                                {recipe.name}
+                                            </Text>
+                                            <Text style={styles.recipeTime}>
+                                                <Ionicons
+                                                    name="time-outline"
+                                                    size={14}
+                                                    color={colors.text.secondary}
+                                                />{" "}
+                                                {recipe.prepTime} mins
+                                            </Text>
+                                        </View>
+                                        <View style={styles.recipeImage}>
+                                            <ThemedImage source={recipe.image} />
+                                        </View>
                                     </View>
-                                    <View style={styles.recipeImage}>
-                                        <ThemedImage source={recipe.image} />
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    )}
                 </View>
 
                 <View style={{ height: 100 }} />

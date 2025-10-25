@@ -7,14 +7,28 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import ThemedImage from "../src/components/themed-image";
 import { Button } from "../src/components/ui";
-import { borderRadius, colors, fontSize, spacing } from "../src/constants";
-import { useCartStore } from "../src/store";
+import {
+    borderRadius,
+    colors,
+    fontSize,
+    images,
+    spacing,
+} from "../src/constants";
+import { useCartStore, useProfileStore } from "../src/store";
 
 export default function OrderSuccessScreen() {
     const router = useRouter();
     const { orderId, total } = useLocalSearchParams();
     const { clearSelectedItems } = useCartStore();
+    const { profile, addresses, paymentMethods } = useProfileStore();
+
+    // Get default address and payment method
+    const defaultAddress =
+        addresses.find((addr) => addr.isDefault) || addresses[0];
+    const defaultPayment =
+        paymentMethods.find((pm) => pm.isDefault) || paymentMethods[0];
 
     // Clear selected items when component mounts
     React.useEffect(() => {
@@ -38,10 +52,10 @@ export default function OrderSuccessScreen() {
             >
                 {/* Success Illustration */}
                 <View style={styles.illustrationContainer}>
-                    <View style={styles.illustrationPlaceholder}>
-                        <Text style={styles.illustrationEmoji}>🛵</Text>
-                        <Text style={styles.illustrationEmoji}>📦</Text>
-                    </View>
+                    <ThemedImage
+                        source={images.orderSuccess}
+                        style={{ width: 200, height: 200 }}
+                    />
                 </View>
 
                 {/* Success Message */}
@@ -57,20 +71,33 @@ export default function OrderSuccessScreen() {
                         <Text style={styles.detailLabel}>Transaction ID</Text>
                     </View>
                     <Text style={styles.detailValue}>
-                        {orderId || "039936200"}
+                        {orderId || `ORD${Date.now()}`}
                     </Text>
 
                     <View style={styles.detailRow}>
-                        <Text style={styles.detailLabel}>Receipient name</Text>
+                        <Text style={styles.detailLabel}>Recipient name</Text>
                     </View>
-                    <Text style={styles.detailValue}>Dexter Morgan</Text>
+                    <Text style={styles.detailValue}>
+                        {defaultAddress?.name || profile.name}
+                    </Text>
 
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Address</Text>
                     </View>
                     <Text style={styles.detailValue}>
-                        Jalan By Pass Ngurah Rai, Denpasar, Bali, 80228
+                        {defaultAddress?.address || "No address provided"}
                     </Text>
+
+                    {defaultAddress?.phone && (
+                        <>
+                            <View style={styles.detailRow}>
+                                <Text style={styles.detailLabel}>Phone</Text>
+                            </View>
+                            <Text style={styles.detailValue}>
+                                {defaultAddress.phone}
+                            </Text>
+                        </>
+                    )}
 
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Date</Text>
@@ -86,12 +113,16 @@ export default function OrderSuccessScreen() {
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Payment method</Text>
                     </View>
-                    <Text style={styles.detailValue}>BCA Virtual Account</Text>
+                    <Text style={styles.detailValue}>
+                        {defaultPayment?.name || "Cash on Delivery"}
+                    </Text>
 
                     <View style={styles.detailRow}>
                         <Text style={styles.detailLabel}>Total amount</Text>
                     </View>
-                    <Text style={styles.detailValue}>${total || "73.90"}</Text>
+                    <Text style={styles.detailValue}>
+                        ${typeof total === "string" ? total : "0.00"}
+                    </Text>
 
                     <View style={styles.statusRow}>
                         <Text style={styles.statusLabel}>Status</Text>
@@ -134,7 +165,6 @@ const styles = StyleSheet.create({
     },
     illustrationContainer: {
         alignItems: "center",
-        marginBottom: spacing.lg,
     },
     illustrationPlaceholder: {
         width: 200,

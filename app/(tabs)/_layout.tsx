@@ -1,32 +1,27 @@
-import { Ionicons } from "@expo/vector-icons";
+// eslint-disable-next-line import/no-unresolved
+import CartCounter from "@/src/components/cart/CartCounter";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, Text, View } from "react-native";
-import { borderRadius, colors, spacing } from "../../src/constants";
-import { useCartStore } from "../../src/store";
+import { Platform, View } from "react-native";
+import { borderRadius, colors, Icons, spacing } from "../../src/constants";
 
-const ActiveTabIcon = () => (
-    <View
-        style={{
-            position: "absolute",
-            bottom: -25,
-            width: 0,
-            height: 0,
-            marginTop: 4,
-            borderLeftWidth: 15,
-            borderRightWidth: 15,
-            borderBottomWidth: 15,
-            borderBottomStartRadius: 10,
-            borderBottomEndRadius: 10,
-            borderLeftColor: "transparent",
-            borderRightColor: "transparent",
-            borderBottomColor: colors.primary,
-        }}
-    />
-);
+const ActiveTabIcon = () => {
+    const { ActiveIconIndicator } = Icons();
+
+    return (
+        <View
+            style={{
+                position: "absolute",
+                bottom: -28,
+            }}
+        >
+            <ActiveIconIndicator />
+        </View>
+    );
+};
 
 export default function TabLayout() {
-    const cartItems = useCartStore((state) => state.items);
+    const { HomeIcon, CategoryIcon, OrdersIcon, ProfileIcon } = Icons();
 
     return (
         <Tabs
@@ -59,10 +54,11 @@ export default function TabLayout() {
                     title: "Home",
                     tabBarIcon: ({ color, focused }) => (
                         <View style={{ alignItems: "center" }}>
-                            <Ionicons
-                                name={focused ? "home" : "home-outline"}
-                                size={26}
-                                color={color}
+                            <HomeIcon
+                                isActive={focused}
+                                color={focused ? color : colors.inactiveIcon}
+                                width={26}
+                                height={26}
                             />
                             {focused && <ActiveTabIcon />}
                         </View>
@@ -75,10 +71,11 @@ export default function TabLayout() {
                     title: "Categories",
                     tabBarIcon: ({ color, focused }) => (
                         <View style={{ alignItems: "center" }}>
-                            <Ionicons
-                                name={focused ? "grid" : "grid-outline"}
-                                size={26}
-                                color={color}
+                            <CategoryIcon
+                                isActive={focused}
+                                color={focused ? color : colors.inactiveIcon}
+                                width={26}
+                                height={26}
                             />
                             {focused && <ActiveTabIcon />}
                         </View>
@@ -89,7 +86,7 @@ export default function TabLayout() {
                 name="cart"
                 options={{
                     title: "Cart",
-                    tabBarStyle: { display: 'none' },
+                    tabBarStyle: { display: "none" },
                     tabBarIcon: () => (
                         <View
                             style={{
@@ -106,36 +103,12 @@ export default function TabLayout() {
                                 elevation: 8,
                             }}
                         >
-                            <Ionicons
-                                name="cart"
-                                size={30}
-                                color={colors.white}
+                            <CartCounter
+                                cartIcon={{
+                                    color: colors.white,
+                                    size: 25,
+                                }}
                             />
-                            {cartItems.length > 0 && (
-                                <View
-                                    style={{
-                                        position: "absolute",
-                                        top: 0,
-                                        right: 8,
-                                        width: 18,
-                                        height: 18,
-                                        borderRadius: 9,
-                                        backgroundColor: colors.secondary,
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            color: colors.white,
-                                            fontSize: 10,
-                                            fontWeight: "700",
-                                        }}
-                                    >
-                                        {cartItems.length}
-                                    </Text>
-                                </View>
-                            )}
                         </View>
                     ),
                 }}
@@ -146,10 +119,11 @@ export default function TabLayout() {
                     title: "Orders",
                     tabBarIcon: ({ color, focused }) => (
                         <View style={{ alignItems: "center" }}>
-                            <Ionicons
-                                name={focused ? "receipt" : "receipt-outline"}
-                                size={26}
-                                color={color}
+                            <OrdersIcon
+                                isActive={focused}
+                                color={focused ? color : colors.inactiveIcon}
+                                width={26}
+                                height={26}
                             />
                             {focused && <ActiveTabIcon />}
                         </View>
@@ -162,10 +136,11 @@ export default function TabLayout() {
                     title: "Profile",
                     tabBarIcon: ({ color, focused }) => (
                         <View style={{ alignItems: "center" }}>
-                            <Ionicons
-                                name={focused ? "person" : "person-outline"}
-                                size={26}
-                                color={color}
+                            <ProfileIcon
+                                isActive={focused}
+                                color={focused ? color : colors.inactiveIcon}
+                                width={26}
+                                height={26}
                             />
                             {focused && <ActiveTabIcon />}
                         </View>

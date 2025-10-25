@@ -24,7 +24,8 @@ export default function CheckoutScreen() {
         "standard" | "priority"
     >("standard");
 
-    const defaultAddress = addresses.find((addr) => addr.isDefault) || addresses[0];
+    const defaultAddress =
+        addresses.find((addr) => addr.isDefault) || addresses[0];
 
     const selectedItems = items.filter((item) => item.selected);
     const subtotal = getSelectedTotal();
@@ -90,8 +91,12 @@ export default function CheckoutScreen() {
                                 color={colors.primary}
                             />
                         </View>
-                        <Text style={styles.sectionTitle}>Delivery address</Text>
-                        <TouchableOpacity onPress={() => router.push("/profile/addresses")}>
+                        <Text style={styles.sectionTitle}>
+                            Delivery address
+                        </Text>
+                        <TouchableOpacity
+                            onPress={() => router.push("/profile/addresses")}
+                        >
                             <Text style={styles.actionText}>
                                 {defaultAddress?.label || "Add"}
                             </Text>
@@ -104,7 +109,9 @@ export default function CheckoutScreen() {
                             </Text>
                             <TouchableOpacity
                                 style={styles.contactRow}
-                                onPress={() => router.push("/profile/addresses")}
+                                onPress={() =>
+                                    router.push("/profile/addresses")
+                                }
                             >
                                 <Text style={styles.contactName}>
                                     {defaultAddress.name}
@@ -307,7 +314,6 @@ export default function CheckoutScreen() {
                     }
                     onPress={handleProceedToPayment}
                     disabled={isProcessing || selectedItems.length === 0}
-                    loading={isProcessing}
                 />
             </View>
         </View>

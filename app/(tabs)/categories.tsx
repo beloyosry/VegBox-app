@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TextInput,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { CategoryCard } from '../../src/components/product';
-import { useCategories } from '../../src/hooks/useProducts';
+import { useCategories, useProducts } from '../../src/hooks/useProducts';
 import { colors, spacing, borderRadius, fontSize } from '../../src/constants';
 import { CategoryGridSkeleton } from '../../src/components/ui';
 
 export default function CategoriesTabScreen() {
   const router = useRouter();
-  const { data: categories, isLoading, isFetching } = useCategories();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const { data: categories, isLoading, isFetching, refetch } = useCategories();
+  const { data: products } = useProducts();
+
+  // Calculate product count for each category
+  const categoriesWithCount = useMemo(() => {
+    if (!categories || !products) return categories;
+    
+    return categories.map((category) => ({
+      ...category,
+      productCount: products.filter((product) => product.category === category.id).length,
+    }));
+  }, [categories, products]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await refetch();
+    } catch (error) {
+      console.error('Error refreshing categories:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -36,16 +60,30 @@ export default function CategoriesTabScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+          />
+        }
       >
         {(isLoading || isFetching) ? (
           <CategoryGridSkeleton />
         ) : (
           <View style={styles.grid}>
-            {categories?.map((category) => (
+            {categoriesWithCount?.map((category) => (
               <CategoryCard
                 key={category.id}
                 category={category}
-                onPress={() => router.push('/')}
+                onPress={() =>
+                  router.push({
+                    pathname: '/category/[id]',
+                    params: {
+                      id: category.id,
+                      name: category.name,
+                    },
+                  })
+                }
               />
             ))}
           </View>

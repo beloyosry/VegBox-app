@@ -7,7 +7,7 @@ export const mockCategories: Category[] = [
         name: "Vegetables",
         icon: "🥦",
         image: images.categories.vegetables,
-        productCount: 7,
+        productCount: 0, // Calculated dynamically
         color: "#E8F5E9",
     },
     {
@@ -15,7 +15,7 @@ export const mockCategories: Category[] = [
         name: "Fruits",
         icon: "🍌",
         image: images.categories.fruits,
-        productCount: 15,
+        productCount: 0, // Calculated dynamically
         color: "#FFF9C4",
     },
     {
@@ -23,7 +23,7 @@ export const mockCategories: Category[] = [
         name: "Chicken",
         icon: "🍗",
         image: images.categories.chicken,
-        productCount: 8,
+        productCount: 0, // Calculated dynamically
         color: "#FFEBEE",
     },
     {
@@ -31,7 +31,7 @@ export const mockCategories: Category[] = [
         name: "Beef",
         icon: "🥩",
         image: images.categories.beef,
-        productCount: 10,
+        productCount: 0, // Calculated dynamically
         color: "#FFE0B2",
     },
     {
@@ -39,7 +39,7 @@ export const mockCategories: Category[] = [
         name: "Protein",
         icon: "🥚",
         image: images.categories.protein,
-        productCount: 5,
+        productCount: 0, // Calculated dynamically
         color: "#F5F5F5",
     },
     {
@@ -47,7 +47,7 @@ export const mockCategories: Category[] = [
         name: "Seafood",
         icon: "🦞",
         image: images.categories.seafood,
-        productCount: 12,
+        productCount: 0, // Calculated dynamically
         color: "#FFE0B2",
     },
 ];
@@ -62,7 +62,7 @@ export const mockProducts: Product[] = [
         originalPrice: 23.0,
         discount: 30,
         image: images.products.chickenBreast,
-        category: "Chicken",
+        category: "3", // Chicken
         unit: "pack",
         weight: "450-500g",
         inStock: true,
@@ -78,7 +78,7 @@ export const mockProducts: Product[] = [
         originalPrice: 20.0,
         discount: 35,
         image: images.products.chickenFrozen,
-        category: "Chicken",
+        category: "3", // Chicken
         unit: "pack",
         weight: "473-1kg",
         inStock: true,
@@ -94,7 +94,7 @@ export const mockProducts: Product[] = [
         originalPrice: 38.0,
         discount: 21,
         image: images.products.beefSoup,
-        category: "Beef",
+        category: "4", // Beef
         unit: "pack",
         weight: "500-700g",
         inStock: true,
@@ -110,7 +110,7 @@ export const mockProducts: Product[] = [
         originalPrice: 50.0,
         discount: 20,
         image: images.products.beefTenderloin,
-        category: "Beef",
+        category: "4", // Beef
         unit: "pack",
         weight: "450-500g",
         origin: "Import",
@@ -126,7 +126,7 @@ export const mockProducts: Product[] = [
         description: "Farm-fresh omega-3 enriched eggs, packed with nutrients.",
         price: 15.0,
         image: images.products.eggs,
-        category: "Protein",
+        category: "5", // Protein
         unit: "pack",
         weight: "100-1kg",
         inStock: true,
@@ -139,7 +139,7 @@ export const mockProducts: Product[] = [
         description: "Sweet and creamy baby bananas, perfect for snacking.",
         price: 9.0,
         image: images.products.banana,
-        category: "Fruits",
+        category: "2", // Fruits
         unit: "pack",
         weight: "340-500g",
         inStock: true,
