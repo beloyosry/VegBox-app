@@ -1,23 +1,26 @@
 // Category Images
-import vegetables from "../../assets/images/vegetables.png";
-import fruits from "../../assets/images/fruits.png";
 import beef from "../../assets/images/beef.png";
-import seafood from "../../assets/images/seafood.png";
-import protein from "../../assets/images/protein.png";
 import chicken from "../../assets/images/chicken.png";
+import fruits from "../../assets/images/fruits.png";
+import protein from "../../assets/images/protein.png";
+import seafood from "../../assets/images/seafood.png";
+import vegetables from "../../assets/images/vegetables.png";
 
 // Product Images
-import chickenBreast from "../../assets/images/chicken-breast.png";
-import chickenFrozen from "../../assets/images/chicken-frozen.png";
+import banana from "../../assets/images/banana.png";
 import beefSoup from "../../assets/images/beef-soup.png";
 import beefTenderloin from "../../assets/images/beef-tenderloin.png";
+import chickenBreast from "../../assets/images/chicken-breast.png";
+import chickenFrozen from "../../assets/images/chicken-frozen.png";
 import eggs from "../../assets/images/eggs.png";
-import banana from "../../assets/images/banana.png";
 
 // Recipe Images
-import spaghetti from "../../assets/images/spaghetti.png";
 import riceBowl from "../../assets/images/rice-bowl.png";
 import salad from "../../assets/images/salad.png";
+import spaghetti from "../../assets/images/spaghetti.png";
+
+// Splash Screen
+import splashScreen from "../../assets/images/splash-background.png";
 
 // Login Background
 import loginBackground from "../../assets/images/login-background.png";
@@ -56,4 +59,5 @@ export const images = {
     recipes: recipeImages,
     loginBackground,
     homeBackground,
+    splashScreen,
 };

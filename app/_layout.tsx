@@ -7,13 +7,39 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { useColorScheme } from "../hooks/use-color-scheme";
+import { useColorScheme } from "../src/hooks/use-color-scheme";
 import { QueryProvider } from "../src/providers/QueryProvider";
 import { useAuthStore } from "../src/store";
 
 export const unstable_settings = {
     anchor: "login",
+};
+
+const logAsyncStorage = async () => {
+    try {
+        const keys = await AsyncStorage.getAllKeys();
+        const items = await AsyncStorage.multiGet(keys);
+
+        const formatted: Record<string, any> = {};
+
+        items.forEach(([key, value]) => {
+            try {
+                // حاول نفك الـ JSON، لو فشل نخليه نص عادي
+                formatted[key] = JSON.parse(value as string);
+            } catch {
+                formatted[key] = value;
+            }
+        });
+
+        console.log(
+            "📦 AsyncStorage contents:",
+            JSON.stringify(formatted, null, 2)
+        );
+    } catch (error) {
+        console.error("❌ Error fetching AsyncStorage contents:", error);
+    }
 };
 
 function RootLayoutNav() {
@@ -42,10 +68,16 @@ function RootLayoutNav() {
         } else if (isAuthenticated && inLoginScreen) {
             router.replace("/(tabs)");
         }
-    }, [isAuthenticated, segments, isReady]);
+    }, [isAuthenticated, segments, isReady, router]);
+
+    useEffect(() => {
+        logAsyncStorage();
+        // AsyncStorage.clear();
+    }, [AsyncStorage]);
 
     return (
         <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
             <Stack.Screen name="login" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="categories" options={{ headerShown: false }} />
