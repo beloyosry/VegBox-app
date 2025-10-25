@@ -11,7 +11,7 @@ const WelcomeScreen = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowSplash(false);
-        }, 2000); // Show splash for 2 seconds
+        }, 3000); // Show splash for 2 seconds
 
         return () => clearTimeout(timer);
     }, []);
