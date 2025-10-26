@@ -26,7 +26,6 @@ const logAsyncStorage = async () => {
 
         items.forEach(([key, value]) => {
             try {
-                // حاول نفك الـ JSON، لو فشل نخليه نص عادي
                 formatted[key] = JSON.parse(value as string);
             } catch {
                 formatted[key] = value;

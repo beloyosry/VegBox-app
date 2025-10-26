@@ -1,50 +1,117 @@
-# Welcome to your Expo app 👋
+# VegBox - Fresh Vegetables Delivery App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+VegBox is a mobile e-commerce app for ordering fresh vegetables and groceries. Built with React Native and Expo, it features a complete shopping experience with cart management, user authentication, order tracking, and profile management.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **User Authentication** - Login system with persistent sessions
+- **Product Browsing** - Browse vegetables by categories with detailed product pages
+- **Shopping Cart** - Add items to cart, adjust quantities, and manage your order
+- **Checkout Flow** - Complete checkout with address selection and order placement
+- **Order History** - Track your current and past orders
+- **User Profile** - Manage personal info, addresses, and payment methods
+- **Splash Screen** - Custom branded splash screen on app launch
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+### Core
+- **React Native** (0.81.5) - Mobile framework
+- **Expo** (~54.0) - Development platform
+- **TypeScript** - Type safety
+- **Expo Router** - File-based navigation
 
-   ```bash
-   npx expo start
-   ```
+### State Management & Data
+- **Zustand** - Lightweight state management for cart, auth, orders, and profile
+- **TanStack Query** - Server state management and caching
+- **AsyncStorage** - Local data persistence
 
-In the output, you'll find options to open the app in a
+### UI & Animations
+- **React Native Reanimated** - Smooth animations
+- **React Native Gesture Handler** - Touch interactions
+- **Expo Linear Gradient** - Gradient backgrounds
+- **Expo Vector Icons** - Icon library
+- **React Native SVG** - SVG support
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Navigation
+- **React Navigation** - Bottom tabs and stack navigation
+- **Expo Router** - File-based routing system
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### API & Networking
+- **Axios** - HTTP client for API calls
 
-## Get a fresh project
+## Installation
 
-When you're ready, run:
+1. Clone the repository and install dependencies:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Start the development server:
 
-## Learn more
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Run on your device:
+   - Scan the QR code with Expo Go app (iOS/Android)
+   - Press `a` to open Android emulator
+   - Press `i` to open iOS simulator
+   - Press `w` to open in web browser
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
+```
+VegBox-app/
+├── app/                    # Expo Router screens
+│   ├── (tabs)/            # Bottom tab navigation screens
+│   │   ├── index.tsx      # Home/Products screen
+│   │   ├── categories.tsx # Categories screen
+│   │   ├── cart.tsx       # Shopping cart
+│   │   ├── orders.tsx     # Order history
+│   │   └── profile.tsx    # User profile
+│   ├── login.tsx          # Login screen
+│   ├── checkout.tsx       # Checkout flow
+│   ├── product/[id].tsx   # Product details
+│   ├── category/[id].tsx  # Category products
+│   └── order/[id].tsx     # Order details
+├── src/
+│   ├── components/        # Reusable UI components
+│   │   ├── cart/         # Cart-related components
+│   │   ├── product/      # Product cards and lists
+│   │   ├── order/        # Order components
+│   │   └── ui/           # Generic UI components
+│   ├── store/            # Zustand state stores
+│   │   ├── auth.store.ts
+│   │   ├── cart.store.ts
+│   │   ├── order.store.ts
+│   │   └── profile.store.ts
+│   ├── services/         # API service layer
+│   │   ├── auth.service.ts
+│   │   ├── product.service.ts
+│   │   └── order.service.ts
+│   ├── types/            # TypeScript type definitions
+│   ├── constants/        # App constants and theme
+│   ├── hooks/            # Custom React hooks
+│   └── config/           # App configuration
+└── assets/               # Images, fonts, and static files
+```
 
-Join our community of developers creating universal apps.
+## Available Scripts
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npm start          # Start Expo dev server
+npm run android    # Run on Android
+npm run ios        # Run on iOS
+npm run web        # Run on web
+npm run lint       # Run ESLint
+```
+
+## Key Features Implementation
+
+- **State Management**: Using Zustand for global state (cart, auth, profile, orders)
+- **API Integration**: Axios-based service layer with TanStack Query for data fetching
+- **Routing**: File-based routing with Expo Router and typed routes
+- **Persistence**: AsyncStorage for keeping user logged in between sessions
+- **Animations**: Reanimated for smooth transitions and interactions
+- **Type Safety**: Full TypeScript implementation across the app
