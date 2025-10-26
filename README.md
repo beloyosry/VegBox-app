@@ -59,6 +59,13 @@ npx expo start
    - Press `i` to open iOS simulator
    - Press `w` to open in web browser
 
+## 🔑 Test Login Credentials
+
+Use these credentials to login to the app:
+
+- **Phone**: `012345678910`
+- **Password**: `123456`
+
 ## Project Structure
 
 ```
