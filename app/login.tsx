@@ -13,7 +13,13 @@ import {
     View,
 } from "react-native";
 import { Button, Input } from "../src/components/ui";
-import { borderRadius, colors, fontSize, spacing, images } from "../src/constants";
+import {
+    borderRadius,
+    colors,
+    fontSize,
+    images,
+    spacing,
+} from "../src/constants";
 import { useLogin } from "../src/hooks/useAuth";
 
 export default function LoginScreen() {
@@ -70,174 +76,170 @@ export default function LoginScreen() {
     };
 
     return (
-        <View style={styles.container}>
-            <ImageBackground
-                source={images.loginBackground}
-                style={styles.backgroundImage}
-                imageStyle={styles.backgroundImageStyle}
-            >
+        <ImageBackground
+            source={images.loginBackground}
+            style={styles.backgroundImage}
+        >
+            <View style={styles.container}>
                 <View style={styles.overlay} />
-            </ImageBackground>
 
-            <KeyboardAvoidingView
-                style={styles.contentContainer}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-            >
-                <ScrollView
-                    contentContainerStyle={styles.scrollContent}
-                    showsVerticalScrollIndicator={false}
+                <KeyboardAvoidingView
+                    style={styles.contentContainer}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
-                    <View style={styles.logoContainer}>
-                        <Ionicons
-                            name="cube"
-                            size={32}
-                            color={colors.primary}
-                        />
-                    </View>
+                    <ScrollView
+                        contentContainerStyle={styles.scrollContent}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        <View style={styles.logoContainer}>
+                            <Ionicons
+                                name="cube"
+                                size={32}
+                                color={colors.primary}
+                            />
+                        </View>
 
-                    <Text style={styles.welcomeText}>Welcome to VegBox</Text>
-                    <Text style={styles.title}>Login to your{"\n"}Account</Text>
+                        <Text style={styles.welcomeText}>
+                            Welcome to VegBox
+                        </Text>
+                        <Text style={styles.title}>
+                            Login to your{"\n"}Account
+                        </Text>
 
-                    <View style={styles.tabContainer}>
-                        <TouchableOpacity style={styles.tabActive}>
-                            <Text style={styles.tabTextActive}>Login</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tab}>
-                            <Text style={styles.tabText}>Register</Text>
-                        </TouchableOpacity>
-                    </View>
+                        <View style={styles.tabContainer}>
+                            <TouchableOpacity style={styles.tabActive}>
+                                <Text style={styles.tabTextActive}>Login</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.tab}>
+                                <Text style={styles.tabText}>Register</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    <View style={styles.form}>
-                        <Input
-                            label="Phone number"
-                            placeholder="012345678910"
-                            value={phoneNumber}
-                            onChangeText={(text) => {
-                                setPhoneNumber(text);
-                                setErrors({ ...errors, phoneNumber: "" });
-                            }}
-                            error={errors.phoneNumber}
-                            icon="call"
-                            keyboardType="phone-pad"
-                            autoCapitalize="none"
-                        />
+                        <View style={styles.form}>
+                            <Input
+                                label="Phone number"
+                                placeholder="012345678910"
+                                value={phoneNumber}
+                                onChangeText={(text) => {
+                                    setPhoneNumber(text);
+                                    setErrors({ ...errors, phoneNumber: "" });
+                                }}
+                                error={errors.phoneNumber}
+                                icon="call"
+                                keyboardType="phone-pad"
+                                autoCapitalize="none"
+                            />
 
-                        <Input
-                            label="Password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChangeText={(text) => {
-                                setPassword(text);
-                                setErrors({ ...errors, password: "" });
-                            }}
-                            error={errors.password}
-                            icon="lock-closed"
-                            isPassword
-                        />
+                            <Input
+                                label="Password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChangeText={(text) => {
+                                    setPassword(text);
+                                    setErrors({ ...errors, password: "" });
+                                }}
+                                error={errors.password}
+                                icon="lock-closed"
+                                isPassword
+                            />
 
-                        <View style={styles.optionsRow}>
-                            <TouchableOpacity
-                                style={styles.rememberMe}
-                                onPress={() => setRememberMe(!rememberMe)}
-                            >
-                                <View
-                                    style={[
-                                        styles.checkbox,
-                                        rememberMe && styles.checkboxChecked,
-                                    ]}
+                            <View style={styles.optionsRow}>
+                                <TouchableOpacity
+                                    style={styles.rememberMe}
+                                    onPress={() => setRememberMe(!rememberMe)}
                                 >
-                                    {rememberMe && (
-                                        <Ionicons
-                                            name="checkmark"
-                                            size={14}
-                                            color={colors.white}
-                                        />
-                                    )}
-                                </View>
-                                <Text style={styles.rememberText}>
-                                    Remember me
-                                </Text>
-                            </TouchableOpacity>
+                                    <View
+                                        style={[
+                                            styles.checkbox,
+                                            rememberMe &&
+                                                styles.checkboxChecked,
+                                        ]}
+                                    >
+                                        {rememberMe && (
+                                            <Ionicons
+                                                name="checkmark"
+                                                size={14}
+                                                color={colors.white}
+                                            />
+                                        )}
+                                    </View>
+                                    <Text style={styles.rememberText}>
+                                        Remember me
+                                    </Text>
+                                </TouchableOpacity>
 
-                            <TouchableOpacity>
-                                <Text style={styles.forgotText}>
-                                    Forgot Password?
+                                <TouchableOpacity>
+                                    <Text style={styles.forgotText}>
+                                        Forgot Password?
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <Button
+                                title="Login"
+                                onPress={handleLogin}
+                                loading={loginMutation.isPending}
+                                style={styles.loginButton}
+                            />
+
+                            <View style={styles.divider}>
+                                <View style={styles.dividerLine} />
+                                <Text style={styles.dividerText}>
+                                    Or login with
                                 </Text>
-                            </TouchableOpacity>
+                                <View style={styles.dividerLine} />
+                            </View>
+
+                            <View style={styles.socialButtons}>
+                                <TouchableOpacity style={styles.socialButton}>
+                                    <Ionicons
+                                        name="logo-google"
+                                        size={20}
+                                        color="#DB4437"
+                                    />
+                                    <Text style={styles.socialButtonText}>
+                                        Google
+                                    </Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.socialButton}>
+                                    <Ionicons
+                                        name="logo-apple"
+                                        size={20}
+                                        color={colors.black}
+                                    />
+                                    <Text style={styles.socialButtonText}>
+                                        Apple
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.footer}>
+                                <Text style={styles.footerText}>
+                                    By signing up, you agree to the{" "}
+                                    <Text style={styles.link}>
+                                        Terms of Service
+                                    </Text>{" "}
+                                    and{" "}
+                                    <Text style={styles.link}>
+                                        Data Processing Agreement
+                                    </Text>
+                                </Text>
+                            </View>
                         </View>
-
-                        <Button
-                            title="Login"
-                            onPress={handleLogin}
-                            loading={loginMutation.isPending}
-                            style={styles.loginButton}
-                        />
-
-                        <View style={styles.divider}>
-                            <View style={styles.dividerLine} />
-                            <Text style={styles.dividerText}>
-                                Or login with
-                            </Text>
-                            <View style={styles.dividerLine} />
-                        </View>
-
-                        <View style={styles.socialButtons}>
-                            <TouchableOpacity style={styles.socialButton}>
-                                <Ionicons
-                                    name="logo-google"
-                                    size={20}
-                                    color="#DB4437"
-                                />
-                                <Text style={styles.socialButtonText}>
-                                    Google
-                                </Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.socialButton}>
-                                <Ionicons
-                                    name="logo-apple"
-                                    size={20}
-                                    color={colors.black}
-                                />
-                                <Text style={styles.socialButtonText}>
-                                    Apple
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={styles.footer}>
-                            <Text style={styles.footerText}>
-                                By signing up, you agree to the{" "}
-                                <Text style={styles.link}>
-                                    Terms of Service
-                                </Text>{" "}
-                                and{" "}
-                                <Text style={styles.link}>
-                                    Data Processing Agreement
-                                </Text>
-                            </Text>
-                        </View>
-                    </View>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
+            </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
     },
     backgroundImage: {
-        position: "absolute",
-        top: 0,
-        right: 0,
-        width: "60%",
-        height: "40%",
-    },
-    backgroundImageStyle: {
-        opacity: 0.9,
+        flex: 1,
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,
